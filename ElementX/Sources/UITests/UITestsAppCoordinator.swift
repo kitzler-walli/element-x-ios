@@ -625,9 +625,31 @@ class MockScreen: Identifiable {
                                                                                                   userIndicatorController: UserIndicatorControllerMock(),
                                                                                                   stateMachineFactory: StateMachineFactory()))
             
+            let callFlowCoordinator = CallFlowCoordinator(parameters: .init(navigationRootCoordinator: navigationRootCoordinator,
+                                                                            userSessionManager: UserSessionManagerMock(.init(userSessions: .init([userSession]))),
+                                                                            elementCallManager: ElementCallManagerMock(),
+                                                                            windowManager: windowManager,
+                                                                            analytics: analytics))
+            callFlowCoordinator.start()
+            
+            flowCoordinator.actionsPublisher
+                .sink { action in
+                    switch action {
+                    case .presentCall(let roomProxy, let isVoiceCall):
+                        callFlowCoordinator.presentCall(roomProxy: roomProxy, isVoiceCall: isVoiceCall, answeredFromCallKit: false, userSession: userSession)
+                    case .minimizeCall:
+                        callFlowCoordinator.minimizeCall()
+                    case .logout, .clearCache, .forceLogout:
+                        break
+                    }
+                }
+                .store(in: &cancellables)
+            
             flowCoordinator.start()
+            callFlowCoordinator.setNativeCallService(userSession.elementCallService)
             
             retainedState.append(flowCoordinator)
+            retainedState.append(callFlowCoordinator)
             
             return nil
         case .roomMembersListScreenPendingInvites:
