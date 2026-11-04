@@ -6,7 +6,6 @@
 // Please see LICENSE files in the repository root for full details.
 //
 
-import Combine
 import Foundation
 import MatrixRustSDK
 import MatrixRustSDKMocks
@@ -39,7 +38,6 @@ extension TimelineProxyMock {
         } else {
             let provider = TimelineItemProviderMock()
             provider.paginationState = .init(backward: configuration.timelineStartReached ? .endReached : .idle, forward: .endReached)
-            provider.membershipChangePublisher = PassthroughSubject().eraseToAnyPublisher()
             timelineItemProvider = provider
         }
     }
