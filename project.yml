@@ -77,10 +77,10 @@ include:
 packages:
   # Element/Matrix dependencies
   MatrixRustSDK:
-    # Local build with watchOS slices (matrix-rust-sdk 6a686822 = components 26.10.30-2), see ../matrix-rust-components-swift/Package.swift
+    # Local build with watchOS slices (matrix-rust-sdk 3ff03638 = components 26.11.05), see ../matrix-rust-components-swift/Package.swift
     path: ../matrix-rust-components-swift
     # url: https://github.com/element-hq/matrix-rust-components-swift
-    # exactVersion: 26.10.30-2
+    # exactVersion: 26.11.05
   Compound:
     path: compound-ios
   BuildExtensions:
@@ -91,10 +91,10 @@ packages:
     # path: ../matrix-analytics-events
   EmbeddedElementCall:
     url: https://github.com/element-hq/element-call-swift # WebView implementation
-    exactVersion: 0.28.1
+    exactVersion: 0.28.2
   ElementCall:
     url: https://github.com/element-hq/element-call-ios # Native implementation
-    exactVersion: 0.1.0-rc.14
+    exactVersion: 0.1.0-rc.15
     # path: ../element-call-ios
   Emojibase:
     url: https://github.com/matrix-org/emojibase-bindings
