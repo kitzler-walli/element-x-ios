@@ -14,6 +14,37 @@ nonisolated extension NSAttributedString {
         attributedString.applyParagraphWritingDirections()
         return attributedString
     }
+    
+    /// The plain string with each mention pill written out as text and any other attachment dropped.
+    /// - Parameter userDisplayName: Looks up the display name for a mentioned user's ID, which the pill doesn't always carry.
+    func plainTextWithMentions(userDisplayName: (String) -> String? = { _ in nil }) -> String {
+        var text = ""
+        enumerateAttributes(in: NSRange(location: 0, length: length)) { attributes, range, _ in
+            guard attributes[.attachment] != nil else {
+                text += (string as NSString).substring(with: range)
+                return
+            }
+            // Each attachment is one character, so a run can hold several identical pills.
+            if let mentionText = Self.mentionText(for: attributes, userDisplayName: userDisplayName) {
+                text += String(repeating: mentionText, count: range.length)
+            }
+        }
+        return text
+    }
+    
+    private static func mentionText(for attributes: [NSAttributedString.Key: Any], userDisplayName: (String) -> String?) -> String? {
+        if let userID = attributes[.MatrixUserID] as? String {
+            return attributes[.MatrixUserDisplayName] as? String ?? userDisplayName(userID) ?? userID
+        } else if attributes[.MatrixAllUsersMention] != nil {
+            return PillUtilities.atRoom
+        } else if let roomAlias = attributes[.MatrixRoomAlias] as? String {
+            return roomAlias
+        } else if let url = attributes[.link] as? URL {
+            return url.absoluteString
+        } else {
+            return nil
+        }
+    }
 }
 
 nonisolated extension NSMutableAttributedString {

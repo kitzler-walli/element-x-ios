@@ -22,6 +22,7 @@ enum TimelineInteractionHandlerAction {
     case showActionMenu(TimelineItemActionMenuInfo)
     case showRedactConfirmation(itemID: TimelineItemIdentifier)
     case showDebugInfo(TimelineItemDebugInfo)
+    case showTextSelection(TimelineItemTextSelectionInfo)
     
     case displayAudioRecorderPermissionError
     case displayErrorToast(String)
@@ -145,6 +146,12 @@ class TimelineInteractionHandler {
         case .copy:
             guard let messageTimelineItem = timelineItem as? EventBasedMessageTimelineItemProtocol else { return }
             UIPasteboard.general.string = messageTimelineItem.body
+        case .selectText:
+            guard let messageTimelineItem = timelineItem as? EventBasedMessageTimelineItemProtocol,
+                  let text = selectableText(of: messageTimelineItem) else {
+                return
+            }
+            actionsSubject.send(.showTextSelection(.init(id: itemID, attributedString: text)))
         case .copyCaption:
             guard let messageTimelineItem = timelineItem as? EventBasedMessageTimelineItemProtocol,
                   let caption = messageTimelineItem.mediaCaption else {
@@ -277,6 +284,20 @@ class TimelineInteractionHandler {
         // Always update the mode first and then the text so that the composer has time to save the text draft
         actionsSubject.send(.composer(action: .setMode(mode: .edit(originalEventOrTransactionID: eventOrTransactionID, type: editType))))
         actionsSubject.send(.composer(action: .setText(plainText: text, htmlText: htmlText)))
+    }
+    
+    /// The text of a text-based message, formatted as it's shown in the timeline.
+    private func selectableText(of messageTimelineItem: EventBasedMessageTimelineItemProtocol) -> AttributedString? {
+        switch messageTimelineItem.contentType {
+        case .text(let content):
+            content.formattedBody ?? AttributedString(content.body)
+        case .emote(let content):
+            content.formattedBody ?? AttributedString(content.body)
+        case .notice(let content):
+            content.formattedBody ?? AttributedString(content.body)
+        case .audio, .file, .image, .video, .location, .voice, .gallery:
+            nil
+        }
     }
     
     // MARK: Polls

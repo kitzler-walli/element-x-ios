@@ -990,6 +990,7 @@
 		8B9C2890B6DD160A0662861E /* AudioPlaybackSpeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78B4E56DBFFD4A7A39D10F5 /* AudioPlaybackSpeed.swift */; };
 		8BCA60848A55E0093E920B98 /* TimelineMediaContentScanningFailureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7D79FA27D094146E2B5C9D /* TimelineMediaContentScanningFailureView.swift */; };
 		8BD22815DC34D7F9E9C1F2FE /* PillUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C537DE821FED94D23467B6C4 /* PillUtilities.swift */; };
+		8BF87CE6D66B4D782D18E50D /* TimelineItemTextSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7FA178F4AEF84DD37F8CFA4 /* TimelineItemTextSelectionView.swift */; };
 		8C050A8012E6078BEAEF5BC8 /* PillTextAttachmentData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 913C8E13B8B602C7B6C0C4AE /* PillTextAttachmentData.swift */; };
 		8C1A5ECAF895D4CAF8C4D461 /* AppActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F21ED7205048668BEB44A38 /* AppActivityView.swift */; };
 		8C706DA7EAC0974CA2F8F1CD /* MentionBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15748C254911E3654C93B0ED /* MentionBuilder.swift */; };
@@ -3419,6 +3420,7 @@
 		E7495E1119753B06FF2C2279 /* PhotoLibraryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryManager.swift; sourceTree = "<group>"; };
 		E76A706B3EEA32B882DA5E2D /* BlockedUsersScreenViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedUsersScreenViewModelProtocol.swift; sourceTree = "<group>"; };
 		E78FC546F28E045A560F2963 /* EncryptionKeyProviderProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionKeyProviderProtocol.swift; sourceTree = "<group>"; };
+		E7FA178F4AEF84DD37F8CFA4 /* TimelineItemTextSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineItemTextSelectionView.swift; sourceTree = "<group>"; };
 		E8294DB9E95C0C0630418466 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E8495F37D6245AD0CFA1F60B /* AppLockTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLockTests.swift; sourceTree = "<group>"; };
 		E858B68153E2C6E5800336AB /* CXCallControllerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CXCallControllerMock.swift; sourceTree = "<group>"; };
@@ -8105,6 +8107,7 @@
 				ECEC9A622AA2F8DBE928AC78 /* FloatingDateBadge.swift */,
 				EC720B8D99D1490CCDBED6CE /* RedactConfirmationView.swift */,
 				BCDA016D05107DED3B9495CB /* TimelineItemDebugView.swift */,
+				E7FA178F4AEF84DD37F8CFA4 /* TimelineItemTextSelectionView.swift */,
 				D53FCCE44F96E0BC411A6CF0 /* TimelineSenderAvatarView.swift */,
 				93C713D124FE915ABF47A6B7 /* TimelineView.swift */,
 				81F0325E252B057FAEEE1B2D /* TypingIndicatorView.swift */,
@@ -10344,6 +10347,7 @@
 				F3ECA377FF77E81A4F1FA062 /* TimelineItemSendInfoLabel.swift in Sources */,
 				1B88BB631F7FC45A213BB554 /* TimelineItemSender.swift in Sources */,
 				EFBBD44C0A16F017C32D2099 /* TimelineItemStatusView.swift in Sources */,
+				8BF87CE6D66B4D782D18E50D /* TimelineItemTextSelectionView.swift in Sources */,
 				18386B777FDA74E4B3282D4F /* TimelineItemThreadSummary.swift in Sources */,
 				8BCA60848A55E0093E920B98 /* TimelineMediaContentScanningFailureView.swift in Sources */,
 				562EFB9AB62B38830D9AA778 /* TimelineMediaFrame.swift in Sources */,

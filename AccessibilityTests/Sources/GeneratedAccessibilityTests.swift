@@ -815,6 +815,10 @@ extension AccessibilityTests {
         try await performAccessibilityAudit(named: "TimelineItemStyler_Previews")
     }
 
+    func testTimelineItemTextSelectionView() async throws {
+        try await performAccessibilityAudit(named: "TimelineItemTextSelectionView_Previews")
+    }
+
     func testTimelineMediaContentScanningFailureView() async throws {
         try await performAccessibilityAudit(named: "TimelineMediaContentScanningFailureView_Previews")
     }

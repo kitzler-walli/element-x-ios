@@ -201,6 +201,8 @@ struct TimelineViewStateBindings {
     
     var debugInfo: TimelineItemDebugInfo?
     
+    var textSelectionInfo: TimelineItemTextSelectionInfo?
+    
     var actionMenuInfo: TimelineItemActionMenuInfo?
     
     var reactionSummaryInfo: ReactionSummaryInfo?
@@ -252,6 +254,12 @@ struct TimelineItemActionMenuInfo: Equatable, Identifiable {
     var id: TimelineItemIdentifier {
         item.id
     }
+}
+
+/// The message whose text the user wants to select part of.
+struct TimelineItemTextSelectionInfo: Identifiable {
+    let id: TimelineItemIdentifier
+    let attributedString: AttributedString
 }
 
 struct ReactionSummaryInfo: Identifiable {

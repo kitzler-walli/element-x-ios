@@ -84,6 +84,27 @@ struct AttributedStringTests {
         #expect(appliedStyle.headIndent == 12)
     }
     
+    @Test("Mention pills are written out as text, using the user ID when no display name is known")
+    func plainTextWithMentions() throws {
+        let attributedString = try #require(AttributedStringBuilder(mentionBuilder: MentionBuilder())
+            .fromHTML("Hi <a href=\"https://matrix.to/#/@alice:matrix.org\">Alice</a>, ask @room in <a href=\"https://matrix.to/#/#room:matrix.org\">#room:matrix.org</a>."))
+        let string = try NSAttributedString(attributedString, including: \.elementX)
+        
+        #expect(string.string.contains("\u{FFFC}"))
+        #expect(string.plainTextWithMentions() == "Hi @alice:matrix.org, ask @room in #room:matrix.org.")
+        #expect(string.plainTextWithMentions { $0 == "@alice:matrix.org" ? "Alice" : nil } == "Hi Alice, ask @room in #room:matrix.org.")
+    }
+    
+    @Test("A user mention carrying a display name is written out with it")
+    func plainTextWithDisplayNameMention() {
+        let string = NSMutableAttributedString(string: "Hi ")
+        let pill = NSMutableAttributedString(attachment: NSTextAttachment())
+        pill.addAttributes([.MatrixUserID: "@bob:matrix.org", .MatrixUserDisplayName: "Bob"], range: NSRange(location: 0, length: pill.length))
+        string.append(pill)
+        
+        #expect(string.plainTextWithMentions { _ in "Robert" } == "Hi Bob")
+    }
+    
     // MARK: - Helpers
     
     private func paragraphDirections(in string: NSAttributedString) -> [NSWritingDirection] {

@@ -9,16 +9,30 @@
 import MatrixRustSDK
 import SwiftUI
 
-final class MessageTextView: UITextView, PillAttachmentViewProviderDelegate, UIGestureRecognizerDelegate, NSLayoutManagerDelegate {
+class MessageTextView: UITextView, PillAttachmentViewProviderDelegate, UIGestureRecognizerDelegate, NSLayoutManagerDelegate {
+    /// Whether the user can select the text. Otherwise a long press is left for the timeline item menu.
+    // A class property because UIKit adds the gesture recognizers during init.
+    class var allowsSelection: Bool {
+        false
+    }
+    
     var timelineContext: TimelineViewModel.Context?
     var updateClosure: (() -> Void)?
     
     override func addGestureRecognizer(_ gestureRecognizer: UIGestureRecognizer) {
         // We don't need to change the behaviour on MacOS
-        if !ProcessInfo.processInfo.isiOSAppOnMac {
+        if !ProcessInfo.processInfo.isiOSAppOnMac, !Self.allowsSelection {
             gestureRecognizer.delegate = self
         }
         super.addGestureRecognizer(gestureRecognizer)
+    }
+    
+    /// Copies the selection with mention pills written out, which would otherwise become placeholder characters.
+    override func copy(_ sender: Any?) {
+        let selectedText = attributedText.attributedSubstring(from: selectedRange)
+        UIPasteboard.general.string = selectedText.plainTextWithMentions { [timelineContext] userID in
+            timelineContext?.viewState.members[userID]?.displayName
+        }
     }
     
     /// This prevents the magnifying glass from showing up
@@ -54,6 +68,13 @@ final class MessageTextView: UITextView, PillAttachmentViewProviderDelegate, UIG
         let isCode = textStorage.attribute(.InlineCode, at: charIndex, effectiveRange: nil) != nil
             || textStorage.attribute(.CodeBlock, at: charIndex, effectiveRange: nil) != nil
         return !isCode
+    }
+}
+
+/// A ``MessageTextView`` whose text the user can select.
+final class SelectableMessageTextView: MessageTextView {
+    override class var allowsSelection: Bool {
+        true
     }
 }
 
@@ -104,6 +125,9 @@ struct MessageText: UIViewRepresentable {
     /// the reserved region fits on the last line (timestamp tucks) or wraps to a new
     /// line (timestamp drops below the text).
     var trailingReservedSize: CGSize = .zero
+    
+    /// Whether the user can select the text, instead of a long press opening the timeline item menu.
+    var allowsSelection = false
     
     private var textInputs: TextInputs {
         TextInputs(attributedString: attributedString,
@@ -174,7 +198,7 @@ struct MessageText: UIViewRepresentable {
     
     func makeUIView(context: Context) -> MessageTextView {
         // Need to use TextKit 1 for mentions
-        let textView = MessageTextView(usingTextLayoutManager: false)
+        let textView = allowsSelection ? SelectableMessageTextView(usingTextLayoutManager: false) : MessageTextView(usingTextLayoutManager: false)
         textView.timelineContext = viewModel
         textView.updateClosure = {
             DispatchQueue.main.async {
@@ -186,7 +210,7 @@ struct MessageText: UIViewRepresentable {
         textView.adjustsFontForContentSizeCategory = true
         
         // Required to allow tapping links
-        // We disable selection at delegate level
+        // We disable selection at delegate level unless it's allowed
         textView.isSelectable = true
         textView.isUserInteractionEnabled = true
         
@@ -239,19 +263,21 @@ struct MessageText: UIViewRepresentable {
     }
     
     func makeCoordinator() -> Coordinator {
-        Coordinator(openURLAction: openURLAction)
+        Coordinator(openURLAction: openURLAction, allowsSelection: allowsSelection)
     }
     
     final class Coordinator: NSObject, UITextViewDelegate {
         var openURLAction: OpenURLAction
+        let allowsSelection: Bool
         fileprivate var textInputs: TextInputs?
         
-        init(openURLAction: OpenURLAction) {
+        init(openURLAction: OpenURLAction, allowsSelection: Bool) {
             self.openURLAction = openURLAction
+            self.allowsSelection = allowsSelection
         }
         
         func textViewDidChangeSelection(_ textView: UITextView) {
-            guard !ProcessInfo.processInfo.isiOSAppOnMac else {
+            guard !ProcessInfo.processInfo.isiOSAppOnMac, !allowsSelection else {
                 return
             }
             textView.selectedTextRange = nil

@@ -557,6 +557,8 @@ class TimelineViewModel: TimelineViewModelType, TimelineViewModelProtocol {
                     state.bindings.redactConfirmationInfo = .init(id: itemID)
                 case .showDebugInfo(let debugInfo):
                     state.bindings.debugInfo = debugInfo
+                case .showTextSelection(let textSelectionInfo):
+                    state.bindings.textSelectionInfo = textSelectionInfo
                 case .viewInRoomTimeline(let eventID):
                     Task { await self.viewInRoomTimeline(eventID: eventID) }
                 case .displayThread(let itemID):

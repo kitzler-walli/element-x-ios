@@ -71,7 +71,7 @@ struct TimelineInteractionHandlerTests {
     
     // MARK: - Voice message autoplay
     
-    @Test
+    @Test("The following voice message plays once the current one finishes")
     func autoplaysTheFollowingVoiceMessage() async throws {
         let handler = makeHandler(timelineItems: [Self.firstVoiceMessage, Self.secondVoiceMessage])
         
@@ -87,7 +87,7 @@ struct TimelineInteractionHandlerTests {
         #expect(mediaPlayerProvider.playSoundEffectReceivedSoundEffect == .tink)
     }
     
-    @Test
+    @Test("Autoplay stops at a message that isn't a voice message")
     func doesNotAutoplayAcrossAnotherMessage() async {
         let handler = makeHandler(timelineItems: [Self.firstVoiceMessage, Self.textMessage, Self.secondVoiceMessage])
         
@@ -100,7 +100,7 @@ struct TimelineInteractionHandlerTests {
         #expect(!mediaPlayerProvider.playSoundEffectCalled)
     }
     
-    @Test
+    @Test("Nothing plays after the last voice message finishes")
     func doesNotAutoplayAfterTheLastVoiceMessage() async {
         let handler = makeHandler(timelineItems: [Self.firstVoiceMessage])
         
@@ -113,7 +113,7 @@ struct TimelineInteractionHandlerTests {
         #expect(!mediaPlayerProvider.playSoundEffectCalled)
     }
     
-    @Test
+    @Test("Pausing a voice message stops the following one from playing")
     func doesNotAutoplayAfterPausing() async {
         let handler = makeHandler(timelineItems: [Self.firstVoiceMessage, Self.secondVoiceMessage])
         
@@ -130,7 +130,7 @@ struct TimelineInteractionHandlerTests {
         #expect(loadedSourceURLs == [Self.firstSourceURL])
     }
     
-    @Test
+    @Test("Replaying a voice message doesn't jump to the following one")
     func replayingAVoiceMessageDoesNotJumpToTheFollowingOne() async throws {
         let handler = makeHandler(timelineItems: [Self.firstVoiceMessage, Self.secondVoiceMessage])
         
@@ -161,7 +161,7 @@ struct TimelineInteractionHandlerTests {
     
     // MARK: - Voice message recording
     
-    @Test
+    @Test("An active voice message recording is stopped")
     func stopRecordingIfNeededStopsAnActiveRecording() async {
         let voiceMessageRecorder = VoiceMessageRecorderMock()
         voiceMessageRecorder.isRecording = true
@@ -172,7 +172,7 @@ struct TimelineInteractionHandlerTests {
         #expect(voiceMessageRecorder.stopRecordingCallsCount == 1)
     }
     
-    @Test
+    @Test("An idle voice message recorder is left alone")
     func stopRecordingIfNeededIgnoresAnIdleRecorder() async {
         let voiceMessageRecorder = VoiceMessageRecorderMock()
         voiceMessageRecorder.isRecording = false
@@ -181,6 +181,22 @@ struct TimelineInteractionHandlerTests {
         await handler.stopRecordingVoiceMessageIfNeeded()
         
         #expect(!voiceMessageRecorder.stopRecordingCalled)
+    }
+    
+    // MARK: - Text selection
+    
+    @Test("Selecting text shows the message's text")
+    func selectTextShowsTheMessageText() throws {
+        let handler = makeHandler(timelineItems: [Self.textMessage])
+        var receivedActions = [TimelineInteractionHandlerAction]()
+        let cancellable = handler.actions.sink { receivedActions.append($0) }
+        defer { cancellable.cancel() }
+        
+        handler.handleTimelineItemMenuAction(.selectText, itemID: Self.textMessage.id)
+        
+        let textSelectionInfo = try #require(receivedActions.compactMap(\.textSelectionInfo).first)
+        #expect(textSelectionInfo.id == Self.textMessage.id)
+        #expect(String(textSelectionInfo.attributedString.characters) == "Test message")
     }
     
     // MARK: - Helpers
@@ -236,5 +252,14 @@ struct TimelineInteractionHandlerTests {
                                                     source: try? MediaSourceProxy(url: sourceURL, mimeType: "audio/ogg"),
                                                     fileSize: nil,
                                                     contentType: nil))
+    }
+}
+
+private extension TimelineInteractionHandlerAction {
+    var textSelectionInfo: TimelineItemTextSelectionInfo? {
+        if case .showTextSelection(let info) = self {
+            return info
+        }
+        return nil
     }
 }

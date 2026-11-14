@@ -91,6 +91,9 @@ struct TimelineItemMenuActionProvider {
             actions.append(.copy)
             
             if !ProcessInfo.processInfo.isiOSAppOnMac {
+                // Text in the bubble is already selectable on Mac.
+                actions.append(.selectText)
+                
                 // As of macOS 26.2, the sheet isn't presented, but it is easy enough
                 // to select some text and right click on Mac anyway so hide this one.
                 actions.append(.translate)

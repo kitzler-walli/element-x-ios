@@ -1426,6 +1426,13 @@ extension PreviewTests {
     }
 
     @Test
+    func timelineItemTextSelectionView() async throws {
+        for (index, preview) in TimelineItemTextSelectionView_Previews._allPreviews.enumerated() {
+            try await assertSnapshots(matching: preview, step: index)
+        }
+    }
+
+    @Test
     func timelineMediaContentScanningFailureView() async throws {
         for (index, preview) in TimelineMediaContentScanningFailureView_Previews._allPreviews.enumerated() {
             try await assertSnapshots(matching: preview, step: index)

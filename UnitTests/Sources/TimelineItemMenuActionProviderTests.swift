@@ -9,7 +9,7 @@
 import Testing
 
 struct TimelineItemMenuActionProviderTests {
-    @Test
+    @Test("A live location share can't be forwarded")
     func liveLocationShareIsNotForwardable() throws {
         let item = makeLiveLocationItem(isLive: true)
         let actions = try #require(makeActions(for: item))
@@ -18,7 +18,7 @@ struct TimelineItemMenuActionProviderTests {
         #expect(!hasForward)
     }
     
-    @Test
+    @Test("An ended live location share can't be forwarded")
     func endedLiveLocationShareIsNotForwardable() throws {
         let item = makeLiveLocationItem(isLive: false)
         let actions = try #require(makeActions(for: item))
@@ -27,7 +27,7 @@ struct TimelineItemMenuActionProviderTests {
         #expect(!hasForward)
     }
     
-    @Test
+    @Test("A poll can't be forwarded")
     func pollIsNotForwardable() throws {
         let item = PollRoomTimelineItem.mock(poll: .emptyDisclosed)
         let actions = try #require(makeActions(for: item))
@@ -36,7 +36,7 @@ struct TimelineItemMenuActionProviderTests {
         #expect(!hasForward)
     }
     
-    @Test
+    @Test("A text message can be forwarded")
     func textMessageIsForwardable() throws {
         let item = TextRoomTimelineItem(id: .randomEvent,
                                         timestamp: .mock,
@@ -51,7 +51,7 @@ struct TimelineItemMenuActionProviderTests {
         #expect(hasForward)
     }
     
-    @Test
+    @Test("A removed message can't be forwarded")
     func redactedMessageIsNotForwardable() throws {
         let item = RedactedRoomTimelineItem(id: .randomEvent,
                                             body: "Message removed",
@@ -66,7 +66,7 @@ struct TimelineItemMenuActionProviderTests {
         #expect(!hasForward)
     }
     
-    @Test
+    @Test("A message that couldn't be decrypted can't be forwarded")
     func encryptedMessageIsNotForwardable() throws {
         let item = EncryptedRoomTimelineItem(id: .randomEvent,
                                              body: "",
@@ -82,13 +82,28 @@ struct TimelineItemMenuActionProviderTests {
         #expect(!hasForward)
     }
     
-    @Test
+    @Test("A message that hasn't been sent yet can't be forwarded")
     func localEchoIsNotForwardable() throws {
         let item = makeTextItem(id: .event(uniqueID: .init("local"), eventOrTransactionID: .transactionID("txn")))
         let actions = try #require(makeActions(for: item))
         
         let hasForward = actions.actions.contains(where: \.isForward)
         #expect(!hasForward)
+    }
+    
+    @Test("A text message offers selecting part of its text")
+    func textMessageOffersSelectText() throws {
+        let actions = try #require(makeActions(for: makeTextItem()))
+        
+        #expect(actions.actions.contains(.selectText))
+    }
+    
+    @Test("A message without text doesn't offer selecting text")
+    func pollDoesNotOfferSelectText() throws {
+        let item = PollRoomTimelineItem.mock(poll: .emptyDisclosed)
+        let actions = try #require(makeActions(for: item))
+        
+        #expect(!actions.actions.contains(.selectText))
     }
     
     // MARK: - Helpers

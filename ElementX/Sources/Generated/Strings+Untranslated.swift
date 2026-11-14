@@ -10,6 +10,8 @@ import Foundation
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name vertical_whitespace_opening_braces
 internal nonisolated enum UntranslatedL10n {
+  /// Select text
+  internal static var actionSelectText: String { return UntranslatedL10n.tr("Untranslated", "action_select_text") }
   /// Apple Watch
   internal static var commonAppleWatchIos: String { return UntranslatedL10n.tr("Untranslated", "common_apple_watch_ios") }
   /// Install Element on your Apple Watch from the Watch app on this iPhone.
