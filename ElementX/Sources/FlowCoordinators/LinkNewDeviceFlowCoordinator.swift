@@ -15,10 +15,18 @@ enum LinkNewDeviceFlowCoordinatorAction {
     case dismiss
 }
 
+enum LinkNewDeviceFlowCoordinatorEntryPoint {
+    /// Lets the user pick the type of device to link.
+    case deviceSelection
+    /// Links the paired Apple Watch directly.
+    case appleWatch
+}
+
 class LinkNewDeviceFlowCoordinator: FlowCoordinatorProtocol {
     private let navigationStackCoordinator: NavigationStackCoordinator
     private let appLockService: AppLockServiceProtocol
     private let flowParameters: CommonFlowParameters
+    private let entryPoint: LinkNewDeviceFlowCoordinatorEntryPoint
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -29,14 +37,21 @@ class LinkNewDeviceFlowCoordinator: FlowCoordinatorProtocol {
     
     init(navigationStackCoordinator: NavigationStackCoordinator,
          appLockService: AppLockServiceProtocol,
-         flowParameters: CommonFlowParameters) {
+         flowParameters: CommonFlowParameters,
+         entryPoint: LinkNewDeviceFlowCoordinatorEntryPoint = .deviceSelection) {
         self.navigationStackCoordinator = navigationStackCoordinator
         self.appLockService = appLockService
         self.flowParameters = flowParameters
+        self.entryPoint = entryPoint
     }
     
     func start(animated: Bool) {
-        presentLinkNewDeviceScreen()
+        switch entryPoint {
+        case .deviceSelection:
+            presentLinkNewDeviceScreen()
+        case .appleWatch:
+            presentLinkAppleWatchScreen()
+        }
     }
     
     func handleAppRoute(_ appRoute: AppRoute, animated: Bool) {
@@ -62,6 +77,28 @@ class LinkNewDeviceFlowCoordinator: FlowCoordinatorProtocol {
                     presentQRCodeScreen(mode: .linkDesktop(flowParameters.userSession.clientProxy.linkNewDeviceService()))
                 case .verifyWithAppLockPIN(let continuation):
                     presentAppLockScreen(continuation: continuation)
+                case .dismiss:
+                    actionsSubject.send(.dismiss)
+                }
+            }
+            .store(in: &cancellables)
+        
+        navigationStackCoordinator.setRootCoordinator(coordinator)
+    }
+    
+    private func presentLinkAppleWatchScreen() {
+        let coordinator = LinkAppleWatchScreenCoordinator(parameters: .init(clientProxy: flowParameters.userSession.clientProxy,
+                                                                            appLockService: appLockService,
+                                                                            watchLinkService: WatchLinkService.shared))
+        coordinator.actionsPublisher
+            .sink { [weak self] action in
+                guard let self else { return }
+                
+                switch action {
+                case .verifyWithAppLockPIN(let continuation):
+                    presentAppLockScreen(continuation: continuation)
+                case .requestOAuthAuthorisation(let url, let continuation):
+                    actionsSubject.send(.requestOAuthAuthorisation(url, continuation))
                 case .dismiss:
                     actionsSubject.send(.dismiss)
                 }

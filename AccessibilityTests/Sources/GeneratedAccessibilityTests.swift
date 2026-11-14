@@ -299,6 +299,10 @@ extension AccessibilityTests {
         try await performAccessibilityAudit(named: "LegalInformationScreen_Previews")
     }
 
+    func testLinkAppleWatchScreen() async throws {
+        try await performAccessibilityAudit(named: "LinkAppleWatchScreen_Previews")
+    }
+
     func testLinkNewDeviceScreen() async throws {
         try await performAccessibilityAudit(named: "LinkNewDeviceScreen_Previews")
     }

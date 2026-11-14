@@ -14,6 +14,7 @@ nonisolated enum Target: String {
     case mainApp = "elementx"
     case nse
     case shareExtension = "shareextension"
+    case watchApp = "watchapp"
     case tests
     
     var useLightweightTokioRuntime: Bool {
@@ -21,6 +22,7 @@ nonisolated enum Target: String {
         case .mainApp: false
         case .nse: true
         case .shareExtension: true
+        case .watchApp: true
         case .tests: false
         }
     }

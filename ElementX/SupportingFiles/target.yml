@@ -231,6 +231,7 @@ targets:
     dependencies:
     - target: NSE
     - target: ShareExtension
+    - target: Watch
     - target: MatrixRustSDKMocks
     - package: MatrixRustSDK
       embed: true

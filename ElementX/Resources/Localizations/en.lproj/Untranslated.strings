@@ -1,1 +1,28 @@
 "untranslated" = "Untranslated";
+
+"common_apple_watch_ios" = "Apple Watch";
+
+"screen_link_apple_watch_ready_title_ios" = "Use Element on your Apple Watch";
+"screen_link_apple_watch_ready_message_ios" = "Your Apple Watch gets its own secure, verified session, so you can keep chatting when your iPhone isn't with you.";
+"screen_link_apple_watch_not_paired_ios" = "Pair an Apple Watch with this iPhone to use Element on it.";
+"screen_link_apple_watch_app_not_installed_ios" = "Install Element on your Apple Watch from the Watch app on this iPhone.";
+"screen_link_apple_watch_open_app_ios" = "Open Element on your Apple Watch to continue.";
+"screen_link_apple_watch_set_up_action_ios" = "Set up Apple Watch";
+"screen_link_apple_watch_connecting_ios" = "Connecting to your Apple Watch…";
+"screen_link_apple_watch_authorising_ios" = "Approve the sign in to continue.";
+"screen_link_apple_watch_verifying_ios" = "Verifying your Apple Watch…";
+"screen_link_apple_watch_done_title_ios" = "Your Apple Watch is ready";
+"screen_link_apple_watch_done_message_ios" = "Element on your Apple Watch is signed in and verified.";
+"screen_link_apple_watch_unreachable_ios" = "Your Apple Watch can't be reached. Open Element on it and try again.";
+
+"screen_watch_onboarding_title_ios" = "Element";
+"screen_watch_onboarding_message_ios" = "Set up Element using your iPhone.";
+"screen_watch_onboarding_request_action_ios" = "Set up with iPhone";
+"screen_watch_onboarding_waiting_ios" = "Continue on your iPhone.";
+"screen_watch_onboarding_iphone_unreachable_ios" = "Open Element on your iPhone, then try again.";
+"screen_watch_onboarding_connecting_ios" = "Connecting…";
+"screen_watch_onboarding_approve_ios" = "Approve the sign in on your iPhone.";
+"screen_watch_onboarding_verifying_ios" = "Verifying…";
+"screen_watch_onboarding_failed_ios" = "Setup didn't complete. Try again.";
+"screen_watch_room_reply_placeholder_ios" = "Reply";
+"screen_watch_settings_sign_out_message_ios" = "This removes Element from this Apple Watch. Your iPhone stays signed in.";

@@ -236,6 +236,7 @@ enum TestablePreviewsDictionary {
         if #available(iOS 26.0, *) {
             dictionary["EmojiPickerScreen_Previews"] = EmojiPickerScreen_Previews.self
             dictionary["IdentityConfirmationScreen_Previews"] = IdentityConfirmationScreen_Previews.self
+            dictionary["LinkAppleWatchScreen_Previews"] = LinkAppleWatchScreen_Previews.self
             dictionary["LinkNewDeviceScreen_Previews"] = LinkNewDeviceScreen_Previews.self
             dictionary["LoginScreen_Previews"] = LoginScreen_Previews.self
             dictionary["NotificationSettingsScreen_Previews"] = NotificationSettingsScreen_Previews.self

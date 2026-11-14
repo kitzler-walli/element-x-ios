@@ -12,7 +12,7 @@ import MatrixRustSDK
 nonisolated protocol ClientFactoryProtocol {
     // MARK: Authentication
     
-    #if IS_MAIN_APP
+    #if IS_MAIN_APP || IS_WATCH_APP
     func makeAuthenticationClient(serverNameOrBaseURL: String,
                                   sessionDirectories: SessionDirectories,
                                   passphrase: Data,

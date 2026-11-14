@@ -14,11 +14,13 @@ options:
   deploymentTarget:
     iOS: '18.5'
     macOS: '14.5'
+    watchOS: '11.0'
   groupOrdering:
   - order:
     - ElementX
     - NSE
     - ShareExtension
+    - Watch
     - UnitTests
     - PreviewTests
     - UITests
@@ -61,6 +63,7 @@ include:
 - path: ElementX/SupportingFiles/target.yml
 - path: NSE/SupportingFiles/target.yml
 - path: ShareExtension/SupportingFiles/target.yml
+- path: Watch/SupportingFiles/target.yml
 - path: UnitTests/SupportingFiles/target.yml
 - path: PreviewTests/SupportingFiles/target.yml
 - path: UITests/SupportingFiles/target.yml
@@ -74,9 +77,10 @@ include:
 packages:
   # Element/Matrix dependencies
   MatrixRustSDK:
-    url: https://github.com/element-hq/matrix-rust-components-swift
-    exactVersion: 26.10.30-2
-    # path: ../matrix-rust-sdk
+    # Local build with watchOS slices (matrix-rust-sdk 6a686822 = components 26.10.30-2), see ../matrix-rust-components-swift/Package.swift
+    path: ../matrix-rust-components-swift
+    # url: https://github.com/element-hq/matrix-rust-components-swift
+    # exactVersion: 26.10.30-2
   Compound:
     path: compound-ios
   BuildExtensions:

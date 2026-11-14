@@ -1,14 +1,19 @@
 settings:
   APP_DISPLAY_NAME: Element X
   PRODUCTION_APP_NAME: Element
-  APP_GROUP_IDENTIFIER: group.io.element
-  BASE_BUNDLE_IDENTIFIER: io.element.elementx
+  APP_GROUP_IDENTIFIER: group.at.kw.elementx
+  # The watch has its own container, add this group to the watch app's identifier when signing.
+  WATCH_APP_GROUP_IDENTIFIER: group.at.kw.elementx.watch
+  BASE_BUNDLE_IDENTIFIER: at.kw.elementx
   ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: "colors/accent-color"
-  DEVELOPMENT_TEAM: 7J4U792NQT
+  # Private fork signed with the same team as BeatRunner (automatic signing).
+  DEVELOPMENT_TEAM: XM4N953GC3
+  CODE_SIGN_STYLE: Automatic
   IS_NIGHTLY_BUILD: false
 
   # Optional configuration to load accounts from Element Classic.
-  CLASSIC_APP_GROUP_IDENTIFIER: group.im.vector
+  # Element Classic's group belongs to Element's team, so the fork can't migrate its accounts.
+  CLASSIC_APP_GROUP_IDENTIFIER: $(APP_GROUP_IDENTIFIER)
   CLASSIC_APP_KEYCHAIN_SERVICE_IDENTIFIER: im.vector.app.encryption-manager-service
   CLASSIC_APP_KEYCHAIN_ACCESS_GROUP_IDENTIFIER: "$(DEVELOPMENT_TEAM).im.vector.app.keychain.shared"
   CLASSIC_APP_DEEP_LINK_URL: "element://open"

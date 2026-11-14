@@ -523,6 +523,13 @@ extension PreviewTests {
     }
 
     @Test
+    func linkAppleWatchScreen() async throws {
+        for (index, preview) in LinkAppleWatchScreen_Previews._allPreviews.enumerated() {
+            try await assertSnapshots(matching: preview, step: index)
+        }
+    }
+
+    @Test
     func linkNewDeviceScreen() async throws {
         for (index, preview) in LinkNewDeviceScreen_Previews._allPreviews.enumerated() {
             try await assertSnapshots(matching: preview, step: index)

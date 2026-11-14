@@ -16338,6 +16338,78 @@ nonisolated class VoiceMessageRecorderMock: VoiceMessageRecorderProtocol, @unche
         }
     }
 }
+nonisolated class WatchLinkServiceMock: WatchLinkServiceProtocol, @unchecked Sendable {
+    var statePublisher: CurrentValuePublisher<WatchLinkState, Never> {
+        get { return underlyingStatePublisher }
+        set(value) { underlyingStatePublisher = value }
+    }
+    nonisolated(unsafe) var underlyingStatePublisher: CurrentValuePublisher<WatchLinkState, Never>!
+    var messagesPublisher: AnyPublisher<WatchLinkMessage, Never> {
+        get { return underlyingMessagesPublisher }
+        set(value) { underlyingMessagesPublisher = value }
+    }
+    nonisolated(unsafe) var underlyingMessagesPublisher: AnyPublisher<WatchLinkMessage, Never>!
+
+    //MARK: - activate
+
+    private let activateCallsCountLock = NSLock()
+    private nonisolated(unsafe) var activateUnderlyingCallsCount = 0
+    var activateCallsCount: Int {
+        get { activateCallsCountLock.withLock { activateUnderlyingCallsCount } }
+        set { activateCallsCountLock.withLock { activateUnderlyingCallsCount = newValue } }
+    }
+    var activateCalled: Bool {
+        return activateCallsCount > 0
+    }
+    nonisolated(unsafe) var activateClosure: (() -> Void)?
+
+    func activate() {
+        activateCallsCountLock.withLock { activateUnderlyingCallsCount += 1 }
+        activateClosure?()
+    }
+    //MARK: - send
+
+    private let sendCallsCountLock = NSLock()
+    private nonisolated(unsafe) var sendUnderlyingCallsCount = 0
+    var sendCallsCount: Int {
+        get { sendCallsCountLock.withLock { sendUnderlyingCallsCount } }
+        set { sendCallsCountLock.withLock { sendUnderlyingCallsCount = newValue } }
+    }
+    var sendCalled: Bool {
+        return sendCallsCount > 0
+    }
+    private let sendReceivedMessageLock = NSLock()
+    private nonisolated(unsafe) var sendUnderlyingReceivedMessage: WatchLinkMessage?
+    var sendReceivedMessage: WatchLinkMessage? {
+        get { sendReceivedMessageLock.withLock { sendUnderlyingReceivedMessage } }
+        set { sendReceivedMessageLock.withLock { sendUnderlyingReceivedMessage = newValue } }
+    }
+    private let sendReceivedInvocationsLock = NSLock()
+    private nonisolated(unsafe) var sendUnderlyingReceivedInvocations: [WatchLinkMessage] = []
+    var sendReceivedInvocations: [WatchLinkMessage] {
+        get { sendReceivedInvocationsLock.withLock { sendUnderlyingReceivedInvocations } }
+        set { sendReceivedInvocationsLock.withLock { sendUnderlyingReceivedInvocations = newValue } }
+    }
+
+    private let sendReturnValueLock = NSLock()
+    private nonisolated(unsafe) var sendUnderlyingReturnValue: Result<Void, WatchLinkServiceError>!
+    var sendReturnValue: Result<Void, WatchLinkServiceError>! {
+        get { sendReturnValueLock.withLock { sendUnderlyingReturnValue } }
+        set { sendReturnValueLock.withLock { sendUnderlyingReturnValue = newValue } }
+    }
+    nonisolated(unsafe) var sendClosure: ((WatchLinkMessage) -> Result<Void, WatchLinkServiceError>)?
+
+    func send(_ message: WatchLinkMessage) -> Result<Void, WatchLinkServiceError> {
+        sendCallsCountLock.withLock { sendUnderlyingCallsCount += 1 }
+        sendReceivedMessage = message
+        sendReceivedInvocationsLock.withLock { sendUnderlyingReceivedInvocations.append(message) }
+        if let sendClosure = sendClosure {
+            return sendClosure(message)
+        } else {
+            return sendReturnValue
+        }
+    }
+}
 nonisolated class WindowManagerMock: WindowManagerProtocol, @unchecked Sendable {
     nonisolated(unsafe) var mainWindow: UIWindow!
     nonisolated(unsafe) var overlayWindow: UIWindow!

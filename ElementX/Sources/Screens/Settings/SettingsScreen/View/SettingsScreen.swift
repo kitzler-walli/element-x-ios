@@ -112,6 +112,14 @@ struct SettingsScreen: View {
                         })
             }
             
+            if context.viewState.showAppleWatchButton {
+                ListRow(label: .default(title: UntranslatedL10n.commonAppleWatchIos,
+                                        icon: \.devices),
+                        kind: .navigationLink {
+                            context.send(viewAction: .appleWatch)
+                        })
+            }
+            
             ListRow(label: .default(title: L10n.screenNotificationSettingsTitle,
                                     icon: \.notifications),
                     kind: .navigationLink {
@@ -316,6 +324,8 @@ struct SettingsScreen_Previews: PreviewProvider, TestablePreview {
         let userSettings = UserSettings.mock()
         userSettings.app.multiAccountEnabled = true
         userSettings.app.linkNewDeviceEnabled = true
+        let watchLinkService = WatchLinkServiceMock()
+        watchLinkService.statePublisher = .init(WatchLinkState(isActivated: true, isPaired: true))
         let userSession = UserSessionMock(.init(clientProxy: ClientProxyMock(.init(userID: "@alice:example.com",
                                                                                    deviceID: "AAAAAAAAAAA",
                                                                                    displayName: "Alice Liddell",
@@ -324,6 +334,7 @@ struct SettingsScreen_Previews: PreviewProvider, TestablePreview {
         return SettingsScreenViewModel(userSession: userSession,
                                        isBugReportServiceEnabled: isBugReportServiceEnabled,
                                        isInSecondaryWindow: false,
-                                       userIndicatorController: UserIndicatorControllerMock())
+                                       userIndicatorController: UserIndicatorControllerMock(),
+                                       watchLinkService: watchLinkService)
     }
 }

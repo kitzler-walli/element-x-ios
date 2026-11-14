@@ -18,6 +18,7 @@ enum SettingsScreenViewModelAction {
     
     case manageAccount(url: URL)
     case linkNewDevice
+    case appleWatch
     case notifications
     case secureBackup
     case moderationAndSafety
@@ -46,6 +47,7 @@ struct SettingsScreenViewState: BindableState {
     var userProfile: UserProfile
     var showUserStatusInput = false
     var showLinkNewDeviceButton: Bool
+    var showAppleWatchButton = false
     var showAddAccountButton: Bool
     var accountProfileURL: URL?
     var showAccountDeactivation: Bool
@@ -108,6 +110,7 @@ enum SettingsScreenViewAction {
     
     case manageAccount(url: URL)
     case linkNewDevice
+    case appleWatch
     case notifications
     case secureBackup
     case moderationAndSafety

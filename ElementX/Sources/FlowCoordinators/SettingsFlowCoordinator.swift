@@ -64,6 +64,13 @@ class SettingsFlowCoordinator: FlowCoordinatorProtocol {
             presentSettingsScreen(animated: animated)
         case .chatBackupSettings:
             startEncryptionSettingsFlow()
+        case .appleWatchSettings:
+            // The watch asks again whenever the user taps set up, so don't stack another sheet on an open one.
+            guard linkNewDeviceFlowCoordinator == nil else { return }
+            if navigationStackCoordinator.rootCoordinator == nil {
+                presentSettingsScreen(animated: animated)
+            }
+            startLinkNewDeviceFlow(entryPoint: .appleWatch)
         default:
             break
         }
@@ -79,7 +86,8 @@ class SettingsFlowCoordinator: FlowCoordinatorProtocol {
         let settingsScreenCoordinator = SettingsScreenCoordinator(parameters: .init(userSession: flowParameters.userSession,
                                                                                     isBugReportServiceEnabled: flowParameters.bugReportService.isEnabled,
                                                                                     isInSecondaryWindow: isInSecondaryWindow,
-                                                                                    userIndicatorController: flowParameters.userIndicatorController))
+                                                                                    userIndicatorController: flowParameters.userIndicatorController,
+                                                                                    watchLinkService: WatchLinkService.shared))
         
         settingsScreenCoordinator.actions
             .sink { [weak self] action in
@@ -100,7 +108,9 @@ class SettingsFlowCoordinator: FlowCoordinatorProtocol {
                 case let .manageAccount(url):
                     presentAccountManagementURL(url)
                 case .linkNewDevice:
-                    startLinkNewDeviceFlow()
+                    startLinkNewDeviceFlow(entryPoint: .deviceSelection)
+                case .appleWatch:
+                    startLinkNewDeviceFlow(entryPoint: .appleWatch)
                 case .notifications:
                     presentNotificationSettings()
                 case .secureBackup:
@@ -207,11 +217,12 @@ class SettingsFlowCoordinator: FlowCoordinatorProtocol {
         navigationStackCoordinator.push(coordinator)
     }
     
-    private func startLinkNewDeviceFlow() {
+    private func startLinkNewDeviceFlow(entryPoint: LinkNewDeviceFlowCoordinatorEntryPoint) {
         let stackCoordinator = NavigationStackCoordinator()
         let flowCoordinator = LinkNewDeviceFlowCoordinator(navigationStackCoordinator: stackCoordinator,
                                                            appLockService: appLockService,
-                                                           flowParameters: flowParameters)
+                                                           flowParameters: flowParameters,
+                                                           entryPoint: entryPoint)
         flowCoordinator.actionsPublisher
             .sink { [weak self] action in
                 guard let self else { return }

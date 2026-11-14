@@ -169,7 +169,7 @@ class UserSessionFlowCoordinator: FlowCoordinatorProtocol {
         switch appRoute {
         case .authentication, .accountProvisioningLink, .oAuthCallback:
             break // We always ignore these flows when logged in.
-        case .settings, .chatBackupSettings:
+        case .settings, .appleWatchSettings, .chatBackupSettings:
             if ProcessInfo.processInfo.isiOSAppOnMac, flowParameters.windowManager.secondaryWindowsEnabled {
                 startSettingsFlow(detached: true)
             } else {

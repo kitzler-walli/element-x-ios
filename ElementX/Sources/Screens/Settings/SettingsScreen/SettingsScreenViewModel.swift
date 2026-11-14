@@ -22,7 +22,7 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
         actionsSubject.eraseToAnyPublisher()
     }
     
-    init(userSession: UserSessionProtocol, isBugReportServiceEnabled: Bool, isInSecondaryWindow: Bool, userIndicatorController: UserIndicatorControllerProtocol) {
+    init(userSession: UserSessionProtocol, isBugReportServiceEnabled: Bool, isInSecondaryWindow: Bool, userIndicatorController: UserIndicatorControllerProtocol, watchLinkService: WatchLinkServiceProtocol) {
         userSettings = userSession.userSettings
         clientProxy = userSession.clientProxy
         self.userIndicatorController = userIndicatorController
@@ -49,6 +49,13 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
         
         userSettings.app.multiAccountEnabledPublisher
             .weakAssign(to: \.state.showAddAccountButton, on: self)
+            .store(in: &cancellables)
+        
+        watchLinkService.statePublisher
+            .map(\.isPaired)
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .weakAssign(to: \.state.showAppleWatchButton, on: self)
             .store(in: &cancellables)
         
         userSession.clientProxy.userProfilePublisher
@@ -116,6 +123,8 @@ class SettingsScreenViewModel: SettingsScreenViewModelType, SettingsScreenViewMo
             actionsSubject.send(.manageAccount(url: url))
         case .linkNewDevice:
             actionsSubject.send(.linkNewDevice)
+        case .appleWatch:
+            actionsSubject.send(.appleWatch)
         case .notifications:
             actionsSubject.send(.notifications)
         case .secureBackup:

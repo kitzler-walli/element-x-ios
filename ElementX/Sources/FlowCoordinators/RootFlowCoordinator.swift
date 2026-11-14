@@ -143,7 +143,7 @@ class RootFlowCoordinator: FlowCoordinatorProtocol {
         case .room, .roomAlias, .childRoom, .childRoomAlias,
              .roomDetails, .roomMemberDetails, .userProfile,
              .event, .eventOnRoomAlias, .childEvent, .childEventOnRoomAlias,
-             .call, .settings, .chatBackupSettings, .share, .transferOwnership, .thread, .search:
+             .call, .settings, .appleWatchSettings, .chatBackupSettings, .share, .transferOwnership, .thread, .search:
             switch stateMachine.state {
             case .initial:
                 pendingAppRoute = .init(appRoute: appRoute, userID: userID, awaitsRoom: awaitsRoom)

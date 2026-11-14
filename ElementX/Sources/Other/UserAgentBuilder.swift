@@ -8,6 +8,9 @@
 
 import Foundation
 import UIKit
+#if os(watchOS)
+import WatchKit
+#endif
 
 #if !os(OSX)
 import DeviceKit
@@ -56,8 +59,8 @@ nonisolated enum UserAgentBuilder {
                       clientName,
                       clientVersion,
                       Device.current.safeDescription,
-                      WKInterfaceDevice.current.systemVersion,
-                      WKInterfaceDevice.currentDevice.screenScale)
+                      WKInterfaceDevice.current().systemVersion,
+                      WKInterfaceDevice.current().screenScale)
         #elseif os(OSX)
         return String(format: "%@/%@ (Mac; macOS %@)",
                       clientName,

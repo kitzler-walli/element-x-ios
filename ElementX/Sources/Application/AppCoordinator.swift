@@ -191,6 +191,7 @@ class AppCoordinator: AppCoordinatorProtocol, NotificationManagerDelegate, Secur
             .store(in: &cancellables)
         
         configureCalls()
+        configureWatchLink()
         
         windowManager.secondaryWindowsEnabled = !appLockService.isEnabled
         appLockService.isEnabledPublisher.sink { [weak windowManager] appLockEnabled in
@@ -238,6 +239,23 @@ class AppCoordinator: AppCoordinatorProtocol, NotificationManagerDelegate, Secur
                                                     primaryButton: .init(title: L10n.actionCancel, role: .cancel, action: nil),
                                                     secondaryButton: .init(title: L10n.actionContinue) { openURLAction(confirmationParameters.internalURL) })
         return true
+    }
+    
+    /// Activates the link to the watch app as early as possible so its messages are delivered,
+    /// and opens the Apple Watch settings when the user starts setting up from the watch.
+    private func configureWatchLink() {
+        WatchLinkService.shared.activate()
+        
+        WatchLinkService.shared.messagesPublisher
+            .filter { $0 == .linkRequested }
+            .sink { [weak self] _ in
+                guard let self, appMediator.appState == .active else {
+                    // The watch tells the user to open the app instead.
+                    return
+                }
+                handleAppRoute(.appleWatchSettings, windowType: nil)
+            }
+            .store(in: &cancellables)
     }
     
     func handleAppRoute(_ appRoute: AppRoute, windowType: SecondaryWindowType?) {

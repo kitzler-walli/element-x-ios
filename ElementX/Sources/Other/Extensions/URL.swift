@@ -114,6 +114,10 @@ nonisolated extension URL {
     }
     
     var globalProxy: String? {
+        #if os(watchOS)
+        // watchOS has no system proxy settings.
+        return nil
+        #else
         guard let proxySettings = CFNetworkCopySystemProxySettings()?.takeRetainedValue() else {
             MXLog.error("Failed retrieving proxy settings")
             return nil
@@ -145,6 +149,7 @@ nonisolated extension URL {
         } else {
             return host
         }
+        #endif
     }
     
     // MARK: Mocks

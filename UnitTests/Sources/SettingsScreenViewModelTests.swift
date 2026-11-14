@@ -205,7 +205,14 @@ struct SettingsScreenViewModelTests {
         viewModel = SettingsScreenViewModel(userSession: UserSessionMock(.init(clientProxy: clientProxy, userSettings: userSettings)),
                                             isBugReportServiceEnabled: true,
                                             isInSecondaryWindow: false,
-                                            userIndicatorController: UserIndicatorControllerMock())
+                                            userIndicatorController: UserIndicatorControllerMock(),
+                                            watchLinkService: makeWatchLinkService())
+    }
+
+    private func makeWatchLinkService() -> WatchLinkServiceMock {
+        let watchLinkService = WatchLinkServiceMock()
+        watchLinkService.statePublisher = .init(WatchLinkState())
+        return watchLinkService
     }
     
     /// Shows the emoji picker and selects the provided emoji through its continuation.

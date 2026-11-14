@@ -120,7 +120,7 @@ final class RoomMembersFlowCoordinator: FlowCoordinatorProtocol {
             break // These are converted to a room ID route one level above.
         case .authentication, .accountProvisioningLink, .oAuthCallback,
              .roomList, .room, .roomDetails, .event,
-             .userProfile, .call, .settings, .chatBackupSettings,
+             .userProfile, .call, .settings, .appleWatchSettings, .chatBackupSettings,
              .share, .transferOwnership, .thread, .search:
             break
         }

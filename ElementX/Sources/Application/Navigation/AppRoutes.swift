@@ -50,6 +50,8 @@ enum AppRoute: Hashable {
     case settings
     /// The setting screen for key backup.
     case chatBackupSettings
+    /// The settings screen for setting up the user's Apple Watch.
+    case appleWatchSettings
     /// An external share request e.g. from the ShareExtension
     case share(ShareExtensionPayload)
     /// The change roles screen of a room with the transfer ownership setting

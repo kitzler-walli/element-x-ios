@@ -87,7 +87,7 @@ nonisolated extension ProcessInfo {
     }
     
     var platform: String {
-        if #available(iOS 26.1, *), ProcessInfo.processInfo.isiOSAppOnVision {
+        if #available(iOS 26.1, watchOS 26.1, *), ProcessInfo.processInfo.isiOSAppOnVision {
             "visionOS"
         } else if ProcessInfo.processInfo.isiOSAppOnMac {
             "macOS"

@@ -14,6 +14,7 @@ struct SettingsScreenCoordinatorParameters {
     let isBugReportServiceEnabled: Bool
     let isInSecondaryWindow: Bool
     let userIndicatorController: UserIndicatorControllerProtocol
+    let watchLinkService: WatchLinkServiceProtocol
 }
 
 enum SettingsScreenCoordinatorAction {
@@ -26,6 +27,7 @@ enum SettingsScreenCoordinatorAction {
     
     case manageAccount(url: URL)
     case linkNewDevice
+    case appleWatch
     case notifications
     case secureBackup
     case moderationAndSafety
@@ -60,7 +62,8 @@ final class SettingsScreenCoordinator: CoordinatorProtocol {
         viewModel = SettingsScreenViewModel(userSession: parameters.userSession,
                                             isBugReportServiceEnabled: parameters.isBugReportServiceEnabled,
                                             isInSecondaryWindow: parameters.isInSecondaryWindow,
-                                            userIndicatorController: parameters.userIndicatorController)
+                                            userIndicatorController: parameters.userIndicatorController,
+                                            watchLinkService: parameters.watchLinkService)
         
         viewModel.actions
             .sink { [weak self] action in
@@ -82,6 +85,8 @@ final class SettingsScreenCoordinator: CoordinatorProtocol {
                     actionsSubject.send(.manageAccount(url: url))
                 case .linkNewDevice:
                     actionsSubject.send(.linkNewDevice)
+                case .appleWatch:
+                    actionsSubject.send(.appleWatch)
                 case .notifications:
                     actionsSubject.send(.notifications)
                 case .secureBackup:

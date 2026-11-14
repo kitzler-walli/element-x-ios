@@ -40,7 +40,7 @@ class QRCodeLoginScreenViewModel: QRCodeLoginScreenViewModelType, QRCodeLoginScr
         case .linkDesktop: .linkDesktopInstructions
         case .linkMobile(let operation):
             switch operation.progressPublisher.value {
-            case .qrReady(let image): .displayQR(image)
+            case .qrReady(let image, _): .displayQR(image)
             default: .error(.unknown)
             }
         }

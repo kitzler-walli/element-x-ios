@@ -27,7 +27,8 @@ class LinkNewDeviceService: LinkNewDeviceServiceProtocol {
     /// The progress of linking a new device by showing it a QR code.
     enum LinkMobileProgress: Equatable {
         case starting
-        case qrReady(UIImage)
+        /// The QR code is ready, both as an image to display and as raw data to hand over to a paired device (e.g. the watch).
+        case qrReady(UIImage, data: Data = Data())
         case qrScanned(CheckCodeSenderProxy)
         case waitingForAuthorisation(verificationURL: URL, continuationSender: ContinuationMessageSenderProxy)
         case syncingSecrets
@@ -160,7 +161,7 @@ extension LinkNewDeviceService.LinkMobileProgress: CustomStringConvertible {
         case .starting: .starting
         case .qrReady(let qrCode):
             if let image = UIImage(qrCodeData: qrCode.toBytes()) {
-                .qrReady(image)
+                .qrReady(image, data: qrCode.toBytes())
             } else {
                 throw Error.invalidQRCodeData
             }

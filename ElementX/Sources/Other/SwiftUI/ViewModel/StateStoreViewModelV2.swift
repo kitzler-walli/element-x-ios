@@ -32,10 +32,18 @@ class StateStoreViewModelV2<State: BindableState, ViewAction> {
         set { context.viewState = newValue }
     }
     
+    #if IS_WATCH_APP
+    // The watch app doesn't have the media services, so its screens only get the state.
+    init(initialViewState: State) {
+        context = Context(initialViewState: initialViewState)
+        context.viewModel = self
+    }
+    #else
     init(initialViewState: State, mediaProvider: MediaProviderProtocol? = nil, contentScannerService: ContentScannerServiceProtocol? = nil) {
         context = Context(initialViewState: initialViewState, mediaProvider: mediaProvider, contentScannerService: contentScannerService)
         context.viewModel = self
     }
+    #endif
     
     /// Override to handles incoming `ViewAction`s from the `ViewModel`.
     /// - Parameter viewAction: The `ViewAction` to be processed in `ViewModel` implementation.
@@ -64,6 +72,7 @@ class StateStoreViewModelV2<State: BindableState, ViewAction> {
         /// Get-able property for the `ViewState`
         fileprivate(set) var viewState: State
         
+        #if !IS_WATCH_APP
         /// An optional image loading service so that views can manage themselves
         /// Intentionally non-generic so that it doesn't grow uncontrollably
         let mediaProvider: MediaProviderProtocol?
@@ -73,6 +82,7 @@ class StateStoreViewModelV2<State: BindableState, ViewAction> {
         /// `nil` when no content scanner is configured for the server, or when the screen
         /// intentionally doesn't provide one because it has no media to scan.
         let contentScannerService: ContentScannerServiceProtocol?
+        #endif
         
         /// Set-able access to the bindable state.
         subscript<T>(dynamicMember keyPath: WritableKeyPath<State.BindStateType, T>) -> T {
@@ -86,10 +96,16 @@ class StateStoreViewModelV2<State: BindableState, ViewAction> {
             viewModel?.process(viewAction: viewAction)
         }
         
+        #if IS_WATCH_APP
+        fileprivate init(initialViewState: State) {
+            viewState = initialViewState
+        }
+        #else
         fileprivate init(initialViewState: State, mediaProvider: MediaProviderProtocol?, contentScannerService: ContentScannerServiceProtocol?) {
             self.viewState = initialViewState
             self.mediaProvider = mediaProvider
             self.contentScannerService = contentScannerService
         }
+        #endif
     }
 }

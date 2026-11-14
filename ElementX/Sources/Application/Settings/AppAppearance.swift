@@ -14,6 +14,7 @@ nonisolated enum AppAppearance: CaseIterable, Codable {
     case dark
     case light
     
+    #if !os(watchOS)
     var interfaceStyle: UIUserInterfaceStyle {
         switch self {
         case .light:
@@ -24,4 +25,5 @@ nonisolated enum AppAppearance: CaseIterable, Codable {
             return .unspecified
         }
     }
+    #endif
 }

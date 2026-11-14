@@ -166,7 +166,7 @@ class ChatsTabFlowCoordinator: FlowCoordinatorProtocol {
             }
         case .chatBackupSettings:
             actionsSubject.send(.showChatBackupSettings)
-        case .authentication, .accountProvisioningLink, .oAuthCallback, .settings, .call, .search:
+        case .authentication, .accountProvisioningLink, .oAuthCallback, .settings, .appleWatchSettings, .call, .search:
             break // These routes cannot be handled.
         }
     }

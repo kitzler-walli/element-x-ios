@@ -1,0 +1,137 @@
+name: Watch
+
+schemes:
+  Watch:
+    analyze:
+      config: Debug
+    archive:
+      config: Release
+    build:
+      targets:
+        Watch:
+        - running
+        - profiling
+        - analyzing
+        - archiving
+    profile:
+      config: Release
+    run:
+      config: Debug
+
+targets:
+  Watch:
+    type: application
+    platform: watchOS
+    deploymentTarget: '11.0'
+
+    dependencies:
+    - package: MatrixRustSDK
+      embed: true
+    - package: KeychainAccess
+    - package: Collections
+    - package: BuildExtensions
+      product: Macros
+    - package: DeviceKit
+    - package: Version
+
+    info:
+      path: Info.plist
+      properties:
+        CFBundleDisplayName: $(APP_DISPLAY_NAME)
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        WKApplication: true
+        # Lets the app run, sync and be installed without the iPhone app.
+        WKRunsIndependentlyOfCompanionApp: true
+        WKCompanionAppBundleIdentifier: $(BASE_BUNDLE_IDENTIFIER)
+        appGroupIdentifier: $(WATCH_APP_GROUP_IDENTIFIER)
+        baseBundleIdentifier: $(BASE_BUNDLE_IDENTIFIER)
+        keychainAccessGroupIdentifier: $(KEYCHAIN_ACCESS_GROUP_IDENTIFIER)
+        productionAppName: $(PRODUCTION_APP_NAME)
+        isNightlyBuild: $(IS_NIGHTLY_BUILD)
+
+    entitlements:
+      path: Watch.entitlements
+      properties:
+        com.apple.security.application-groups:
+        - $(WATCH_APP_GROUP_IDENTIFIER)
+        keychain-access-groups:
+        - $(KEYCHAIN_ACCESS_GROUP_IDENTIFIER)
+
+    settings:
+      base:
+        PRODUCT_NAME: Watch
+        PRODUCT_DISPLAY_NAME: $(APP_DISPLAY_NAME)
+        # Watch apps must be prefixed with the bundle identifier of their companion iOS app.
+        PRODUCT_BUNDLE_IDENTIFIER: $(BASE_BUNDLE_IDENTIFIER).watchkitapp
+        MARKETING_VERSION: $(MARKETING_VERSION)
+        CURRENT_PROJECT_VERSION: $(CURRENT_PROJECT_VERSION)
+        DEVELOPMENT_TEAM: $(DEVELOPMENT_TEAM)
+        # arm64 only (Series 9+, Ultra 2+, SE 3): the SDK's aws-lc dependency doesn't build for arm64_32.
+        ARCHS: arm64
+        SDKROOT: watchos
+        TARGETED_DEVICE_FAMILY: 4
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        SWIFT_VERSION: 6
+        SWIFT_APPROACHABLE_CONCURRENCY: YES
+        SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+        OTHER_SWIFT_FLAGS:
+        - "-DIS_WATCH_APP"
+
+    sources:
+    - path: ../Sources
+    - path: ../SupportingFiles
+      excludes:
+      - target.yml
+    - path: ../../ElementX/Resources/Localizations
+    - path: ../../ElementX/Resources/AppIcon.icon
+    # Shared with the main app
+    - path: ../../ElementX/Sources/AppHooks/AppHooks.swift
+    - path: ../../ElementX/Sources/AppHooks/Hooks/TracingHook.swift
+    - path: ../../ElementX/Sources/AppHooks/Hooks/ClientFactoryHook.swift
+    - path: ../../ElementX/Sources/AppHooks/Hooks/RemoteSettingsHook.swift
+    - path: ../../ElementX/Sources/AppHooks/Hooks/UserSessionHook.swift
+    - path: ../../Components/Secrets/Secrets.swift
+    - path: ../../ElementX/Sources/Application/Settings
+    - path: ../../ElementX/Sources/Application/TargetConfiguration.swift
+    - path: ../../ElementX/Sources/Generated/Strings.swift
+    - path: ../../ElementX/Sources/Generated/Strings+Untranslated.swift
+    - path: ../../ElementX/Sources/Other/AccessibilityIdentifiers.swift
+    - path: ../../ElementX/Sources/Other/CurrentValuePublisher.swift
+    - path: ../../ElementX/Sources/Other/Extensions/Alert.swift
+    - path: ../../ElementX/Sources/Other/Extensions/Bundle.swift
+    - path: ../../ElementX/Sources/Other/Extensions/CharacterSet.swift
+    - path: ../../ElementX/Sources/Other/Extensions/Date.swift
+    - path: ../../ElementX/Sources/Other/Extensions/Dictionary.swift
+    - path: ../../ElementX/Sources/Other/Extensions/FileManager.swift
+    - path: ../../ElementX/Sources/Other/Extensions/ProcessInfo.swift
+    - path: ../../ElementX/Sources/Other/Extensions/Publisher.swift
+    - path: ../../ElementX/Sources/Other/Extensions/String.swift
+    - path: ../../ElementX/Sources/Other/Extensions/Task.swift
+    - path: ../../ElementX/Sources/Other/Extensions/URL.swift
+    - path: ../../ElementX/Sources/Other/InfoPlistReader.swift
+    - path: ../../ElementX/Sources/Other/Logging
+      excludes:
+      - ExtensionLogger.swift
+    - path: ../../ElementX/Sources/Other/SDKListener.swift
+    - path: ../../ElementX/Sources/Other/SwiftUI/ViewModel/BindableState.swift
+    - path: ../../ElementX/Sources/Other/SwiftUI/ViewModel/StateStoreViewModelV2.swift
+    - path: ../../ElementX/Sources/Other/UserAgentBuilder.swift
+    - path: ../../ElementX/Sources/Services/AlertTones/NotificationTone.swift
+    - path: ../../ElementX/Sources/Services/Client/ClientBuilderFactory.swift
+    - path: ../../ElementX/Sources/Services/Client/ClientFactory.swift
+    - path: ../../ElementX/Sources/Services/Client/ClientFactoryProtocol.swift
+    - path: ../../ElementX/Sources/Services/Keychain/EncryptionKeyProvider.swift
+    - path: ../../ElementX/Sources/Services/Keychain/EncryptionKeyProviderProtocol.swift
+    - path: ../../ElementX/Sources/Services/Keychain/KeychainController.swift
+    - path: ../../ElementX/Sources/Services/Keychain/KeychainControllerProtocol.swift
+    - path: ../../ElementX/Sources/Services/UserSession/RestorationToken.swift
+    - path: ../../ElementX/Sources/Services/UserSession/SessionDirectories.swift
+    - path: ../../ElementX/Sources/Services/WatchLink
+    - path: ../../ElementX/Sources/UITests/UITestsScreenIdentifier.swift
+    # Compound's tokens and fonts; the rest of Compound is UIKit based and iOS only.
+    - path: ../Vendor/CompoundDesignTokens
+      excludes:
+      - README.md
+      - make_dark_only.py
+    - path: ../../compound-ios/Sources/Compound/Fonts/CompoundFonts.swift
