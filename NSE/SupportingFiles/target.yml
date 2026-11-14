@@ -62,7 +62,7 @@ targets:
     entitlements:
       path: NSE.entitlements
       properties:
-        com.apple.developer.usernotifications.filtering: true
+        # No com.apple.developer.usernotifications.filtering: Apple grants it on request only, and the fork's team doesn't have it.
         com.apple.security.application-groups:
         - $(APP_GROUP_IDENTIFIER)
         keychain-access-groups:
